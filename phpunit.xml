@@ -10,7 +10,8 @@
     </testsuites>
     <source>
         <include>
-            <file>src/Checkout.php</file>
+            <!-- <file>src/Checkout.php</file> -->
+            <directory>src</directory>
         </include>
     </source>
 </phpunit>
