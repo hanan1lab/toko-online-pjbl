@@ -1,0 +1,27 @@
+name: SQA CI & CT Pipeline
+on: [push, pull_request]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    - name: Setup PHP Environment
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.3'
+        coverage: xdebug
+    - name: Install PHP Dependencies
+      run: composer install --prefer-dist --no-progress
+    - name: Install Chrome and ChromeDriver
+      uses: browser-actions/setup-chrome@v1
+    - name: Start PHP Server in Background
+      run: php -S localhost:8000 &
+    - name: Start ChromeDriver in Background
+      run: chromedriver --port=9515 --url-base=wd/hub &
+    - name: Wait for services
+      run: sleep 3
+    - name: Fix PHPUnit Permission
+      run: chmod +x vendor/bin/phpunit
+    - name: Run All Automated Tests & Quality Metrics
+      run: vendor/bin/phpunit tests/ --coverage-text
